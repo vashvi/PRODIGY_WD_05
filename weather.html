@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather App</title>
+    <!-- Google Fonts for stylish font -->
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome Icons for stylish Icon -->
+
+    <script
+      src="https://kit.fontawesome.com/0fefa5e792.js"
+      crossorigin="anonymous"
+    ></script>
+
+    <style>
+      /* Basic Reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #ffffff;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .weather-app {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: #fff;
+        padding: 40px 20px;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        max-width: 400px;
+        width: 100%;
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      .weather-app h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+      }
+
+      .weather-app input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        border: none;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        font-size: 1rem;
+      }
+
+      .weather-app button {
+        background-color: #fff;
+        color: #764ba2;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .weather-app button:hover {
+        background-color: #ddd;
+      }
+
+      .weather-info {
+        margin-top: 20px;
+        animation: fadeIn 1s ease-in-out;
+      }
+
+      .weather-info h2 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+      }
+
+      .weather-info p {
+        font-size: 1.2rem;
+      }
+
+      .weather-icon {
+        font-size: 100px;
+        margin: 0 auto 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .sunny {
+        color: #ffd700;
+        animation: spin 4s linear infinite;
+      }
+
+      .cloudy {
+        color: #74c0fc;
+        animation: float 3s ease-in-out infinite;
+      }
+
+      .rainy {
+        color: #4fc3f7;
+        animation: drop 1s ease-in-out infinite;
+      }
+
+      .snowy {
+        color: #b3e5fc;
+        animation: snow 2s ease-in-out infinite;
+      }
+
+      .foggy {
+        color: #b0bec5;
+        animation: fog 3s ease-in-out infinite;
+      }
+
+      .windy {
+        color: #81d4fa;
+        animation: wind 3s ease-in-out infinite;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @keyframes float {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes drop {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes snow {
+        0% {
+          transform: translateY(0);
+        }
+        50% {
+          transform: translateY(10px);
+        }
+        100% {
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fog {
+        0% {
+          opacity: 0.5;
+        }
+        50% {
+          opacity: 1;
+        }
+        100% {
+          opacity: 0.5;
+        }
+      }
+
+      @keyframes wind {
+        0% {
+          transform: translateX(0);
+        }
+        50% {
+          transform: translateX(10px);
+        }
+        100% {
+          transform: translateX(0);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="weather-app">
+      <h1>Weather App</h1>
+      <input type="text" id="city-input" placeholder="Enter city name" />
+      <button onclick="getWeather()">Get Weather</button>
+      <div class="weather-info" id="weather-info">
+        <!-- Weather data will be displayed here -->
+      </div>
+    </div>
+
+    <script>
+      async function getWeather() {
+        const apiKey = "a5922b04ecbfd4f34401386a4c8fc89c"; // Replace with your OpenWeatherMap API key
+        const city = document.getElementById("city-input").value;
+        const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          if (data.cod === 200) {
+            const weatherDescription = data.weather[0].description;
+            const weatherIcon = getWeatherIcon(data.weather[0].main);
+
+            document.getElementById("weather-info").innerHTML = `
+                        <div class="weather-icon ${weatherIcon.class}"><i class="fas ${weatherIcon.icon}"></i></div>
+                        <h2>${data.name}, ${data.sys.country}</h2>
+                        <p>Temperature: ${data.main.temp}°C</p>
+                        <p>Weather: ${weatherDescription}</p>
+                        <p>Humidity: ${data.main.humidity}%</p>
+                        <p>Wind Speed: ${data.wind.speed} m/s</p>
+                    `;
+          } else {
+            document.getElementById(
+              "weather-info"
+            ).innerHTML = `<p>${data.message}</p>`;
+          }
+        } catch (error) {
+          document.getElementById(
+            "weather-info"
+          ).innerHTML = `<p>Error fetching weather data.</p>`;
+        }
+      }
+
+      function getWeatherIcon(weatherMain) {
+        switch (weatherMain.toLowerCase()) {
+          case "clear":
+            return { icon: "fa-regular fa-sun", class: "sunny" };
+          case "clouds":
+            return { icon: "fa-cloud", class: "cloudy" };
+          case "rain":
+            return { icon: "fa-cloud-showers-heavy", class: "rainy" };
+          case "snow":
+            return { icon: "fa-snowflake", class: "snowy" };
+          case "sleet":
+            return { icon: "fa-cloud-meatball", class: "rainy" };
+          case "wind":
+            return { icon: "fa-wind", class: "windy" };
+          case "fog":
+            return { icon: "fa-smog", class: "foggy" };
+          default:
+            return { icon: "fa-cloud", class: "cloudy" };
+        }
+      }
+    </script>
+  </body>
+</html>
